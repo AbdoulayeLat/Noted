@@ -1,0 +1,40 @@
+{
+    "notes":[      
+        {
+            "id": "1",
+            "title": "First Note",
+            "content": "This is my first Note and its content. Lorem ipsumasfsa asdfasd fsda fsadfasdfa fsdafsdafasdfsdaf "
+        },
+        {
+            "id": "2",
+            "title": "second Note",
+            "content": "This is my second Note and its content"
+        },
+        {
+            "id": "3",
+            "title": "third Note",
+            "content": "This is my third Note and its content"
+        },
+        {
+            "id": "4",
+            "title": "fourth Note",
+            "content": "This is my fourth Note and its content"
+        },
+        {
+            "id": "4",
+            "title": "fourth Note",
+            "content": "This is my fourth Note and its content"
+        },
+        {
+            "id": "4",
+            "title": "fourth Note",
+            "content": "This is my fourth Note and its content"
+        },
+        {
+            "id": "5",
+            "title": "fifth Note",
+            "content": "This is my fifth Note and its content"
+        }
+    ]
+    
+}
