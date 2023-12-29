@@ -13,11 +13,14 @@ export default function Home() {
   const [notes, setNotes] = useState([]);
   const [title, setTitle] = useState("");
   const [content, setContent] = useState("");
+  const [editTitle, setEditTitle] = useState("");
+  const [editContent, setEditContent] = useState("");
   const [noteWarning, setNoteWarning] = useState("none");
   const [loading, setLoading] = useState(true);
   const [openCreate, setOpenCreate] = useState(false);
   const [openEdit, setOpenEdit] = useState(false);
   const {onOpenChange} = useDisclosure();
+  const [editID, setEditID] = useState("");
   let url = 'https://note-server-gold.vercel.app/notes';
 
   const deleteNote = async (id) => {
@@ -80,6 +83,14 @@ export default function Home() {
     setOpenEdit(false)
   }
 
+  const editNote = (id) => {
+    const note = notes.filter((note) => note.id === id);
+    setEditContent(note[0].content);
+    setEditTitle(note[0].title);
+    setEditID(note[0].id)
+    setOpenEdit(true);
+  } 
+
   useEffect(() => {
     const renderNotes = async () => {
       const res = await fetch(url);
@@ -88,18 +99,18 @@ export default function Home() {
       setLoading(false);
     }
     renderNotes();
-  },[])
+  })
 
   return (
     <NextUIProvider>
       <div className='flex flex-col w-[100vw] h-[100vh]'>
         {/* Navbar */}
-        <div className='flex flex-row justify-between items-center mx-20 mt-15 border-b-2'>
+        <div className='flex flex-row justify-between items-center sm:mx-20 mt-15 border-b-2'>
           <p className='font-bold text-[70px] tracking-wide'>Notes</p>
           {/* Create Button */}
-          <div onClick={()=>setOpenCreate(true)} className='flex items-center p-1 rounded-lg cursor-pointer bg-yellow-400 text-black w-fit h-fit hover:text-yellow-400 
+          <div onClick={()=>setOpenCreate(true)} className='flex items-center mr-2 p-1 rounded-lg cursor-pointer bg-yellow-400 text-black w-fit h-fit hover:text-yellow-400 
                         hover:border-yellow-400 hover:border-2 hover:bg-[#784BA0]'>
-            <p className='font-normal text-[30px]'>New Note</p>
+            <p className='hidden sm:block font-normal text-[30px]'>New Note</p>
             <AddIcon fontSize='large' />
           </div>
         </div>
@@ -122,6 +133,21 @@ export default function Home() {
               </ModalFooter>
             </ModalContent>
           </Modal>
+          {/* Update Note Modal */}
+          <Modal hideCloseButton backdrop='blur' isOpen={openEdit} onOpenChange={onOpenChange} size='4xl' className='h-[80vh] border-yellow-400 border-2'>
+            <ModalContent className='bg-inherit bg-img-inherit'>
+              <ModalHeader className='border-yellow-400 border-b-2 flex items-center mx-5'>
+                <input onChange={(e)=>setTitle(e.target.value)} defaultValue={editTitle} autoFocus type="text" className='bg-slate-300 text-black text-[40px] font-normal w-[100%] mr-5 p-2 rounded-md' placeholder='Note title...'  />
+                <Button onClick={()=> setOpenEdit(false)} color='danger'>X</Button>
+              </ModalHeader>
+              <ModalBody>
+                <Textarea onChange={(e)=>setContent(e.target.value)} variant='faded' label='Your note' defaultValue={editContent} classNames={{input:"text-md font-light text-black mt-2", inputWrapper:"bg-slate-300 border-yellow-400" }} isRequired placeholder='Enter your note' />
+              </ModalBody>
+              <ModalFooter className='border-yellow-400 border-t-2 flex mx-5'>
+                <Button className='w-[50px] h-[50px] text-[25px] font-bold flex place-self-end ' onClick={()=>updateNote(editID)} color='success'>Save</Button>
+              </ModalFooter>
+            </ModalContent>
+          </Modal>
           
 
           {loading && 
@@ -130,31 +156,16 @@ export default function Home() {
             </div> 
           }
           {!loading &&      
-            <div className='grid grid-cols-3 gap-5 w-[100%]'>
+            <div className='grid grid-cols-1 sm:grid-cols-3 gap-5 w-[100%]'>
               {notes === null ? <p className='font-light text-[30px] self-center'>No Notes. Create a new one</p> 
               : notes.length === 0 ? <p className='font-light text-[30px] self-center'>No Notes. Create a new one</p> 
               : notes.map((note) =>
-                  <div id={note.id} className='border-2 w-[100%] h-[300px] border-yellow-400 rounded-lg p-2 flex flex-col justify-between'>
-                    {/* Update Note Modal */}
-                    <Modal hideCloseButton backdrop='blur' isOpen={openEdit} onOpenChange={onOpenChange} size='4xl' className='h-[80vh] border-yellow-400 border-2'>
-                      <ModalContent className='bg-inherit bg-img-inherit'>
-                        <ModalHeader className='border-yellow-400 border-b-2 flex items-center mx-5'>
-                          <input onChange={(e)=>setTitle(e.target.value)} defaultValue={note.title} autoFocus type="text" className='bg-slate-300 text-black text-[40px] font-normal w-[100%] mr-5 p-2 rounded-md' placeholder='Note title...'  />
-                          <Button onClick={()=>setOpenEdit(false)} color='danger'>X</Button>
-                        </ModalHeader>
-                        <ModalBody>
-                          <Textarea onChange={(e)=>setContent(e.target.value)} variant='faded' label='Your note' defaultValue={note.content} classNames={{input:"text-md font-light text-black mt-2", inputWrapper:"bg-slate-300 border-yellow-400" }} isRequired placeholder='Enter your note' />
-                        </ModalBody>
-                        <ModalFooter className='border-yellow-400 border-t-2 flex mx-5'>
-                          <Button className='w-[50px] h-[50px] text-[25px] font-bold flex place-self-end ' onClick={()=>updateNote(note.id)} color='success'>Save</Button>
-                        </ModalFooter>
-                      </ModalContent>
-                    </Modal>
+                  <div id={note.id} className='border-2 w-[100%] h-[300px] border-yellow-400 rounded-lg p-2 flex flex-col justify-between'>         
                     <p className='text-[30px] font-semibold bg-yellow-400 bg-opacity-55 line-clamp-1 overflow-hidden w-[100%] h-[30%] rounded-sm flex items-center justify-center'>{note.title}</p>
                     <p className='text-[18px] overflow-hidden line-clamp-4'>{note.content}</p>
                     <div className='flex gap-4 justify-end'>
                       <DeleteIcon onClick={()=>deleteNote(note.id)} fontSize='large' color='error' sx={{cursor:"pointer", ":hover":{background:"rgb(114, 118, 119, 0.6)", padding:"2px", borderRadius: "10px"} }} />
-                      <EditIcon onClick={()=>setOpenEdit(true)} fontSize='large' sx={{color:"rgb(250 204 21)", cursor:"pointer", ":hover":{background:"rgb(114, 118, 119, 0.6)", padding:"2px", borderRadius: "10px"}}} />
+                      <EditIcon onClick={()=>editNote(note.id)} fontSize='large' sx={{color:"rgb(250 204 21)", cursor:"pointer", ":hover":{background:"rgb(114, 118, 119, 0.6)", padding:"2px", borderRadius: "10px"}}} />
                     </div>
                   </div> 
               )}
