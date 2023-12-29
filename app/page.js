@@ -6,9 +6,8 @@ import DeleteIcon from '@mui/icons-material/Delete';
 import EditIcon from '@mui/icons-material/Edit';
 import { useEffect, useState } from 'react';
 import {NextUIProvider } from "@nextui-org/react"; 
-import {Modal, ModalContent, ModalHeader, ModalBody,  ModalFooter, Button, ButtonGroup, Textarea, useDisclosure} from "@nextui-org/react";
+import {Modal, ModalContent, ModalHeader, ModalBody,  ModalFooter, Button, Textarea, useDisclosure} from "@nextui-org/react";
 import apiRequest from '@/apiRequest';
-import { headers } from '@/next.config';
 
 export default function Home() {
   const [notes, setNotes] = useState([]);
@@ -19,7 +18,7 @@ export default function Home() {
   const [openCreate, setOpenCreate] = useState(false);
   const [openEdit, setOpenEdit] = useState(false);
   const {onOpenChange} = useDisclosure();
-  let url = 'http://localhost:3001/notes';
+  let url = 'https://my-json-server.typicode.com/abdoulayelat/note-server/db';
 
   const deleteNote = async (id) => {
     const newNotes = notes.filter((note) => note.id !== id);
