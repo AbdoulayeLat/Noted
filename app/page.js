@@ -18,7 +18,7 @@ export default function Home() {
   const [openCreate, setOpenCreate] = useState(false);
   const [openEdit, setOpenEdit] = useState(false);
   const {onOpenChange} = useDisclosure();
-  let url = 'https://my-json-server.typicode.com/abdoulayelat/note-server/db';
+  let url = 'https://note-server-gold.vercel.app/notes';
 
   const deleteNote = async (id) => {
     const newNotes = notes.filter((note) => note.id !== id);
